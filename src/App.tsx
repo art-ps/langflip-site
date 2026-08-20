@@ -56,35 +56,31 @@ function App() {
             </p>
           </div>
 
-          <div className="document-stage">
-            <div className="document-shadow" aria-hidden="true" />
-            <div className="document-demo" aria-label="Демонстрация исправления раскладки: ghbdtn превращается в привет">
-              <div className="document-topbar" aria-hidden="true">
-                <span />
-                <span />
-                <span />
-                <i />
-              </div>
-              <div className="document-body">
-                <div className="document-label">
-                  <span className="document-mark" aria-hidden="true" />
-                  Живой ввод
-                </div>
-                <div className="color-bar color-bar--blue" aria-hidden="true" />
-                <div className="color-bar color-bar--violet color-bar--short" aria-hidden="true" />
-                <p className="correction-line">
-                  <span className="typed-word">ghbdtn</span>
-                  <span className="arrow" aria-hidden="true">→</span>
-                  <strong>привет</strong>
-                  <span className="text-cursor" aria-hidden="true" />
-                </p>
-                <div className="color-bar color-bar--coral color-bar--medium" aria-hidden="true" />
-                <div className="color-bar color-bar--lime color-bar--short" aria-hidden="true" />
-                <div className="dictation-status">
-                  <span className="microphone" aria-hidden="true">●</span>
-                  Диктовка готова
-                </div>
-              </div>
+          <div
+            className="conversion-demo"
+            aria-label="Демонстрация исправления раскладки: ghbdtn превращается в привет по двойному нажатию Command"
+          >
+            <div className="conversion-glow" aria-hidden="true" />
+            <div className="command-orbit" aria-hidden="true">
+              <span>⌘</span>
+              <span>⌘</span>
+            </div>
+            <div className="conversion-word conversion-before">
+              <span>До</span>
+              <strong>ghbdtn</strong>
+            </div>
+            <div className="conversion-pulse" aria-hidden="true">
+              <i />
+              <span>→</span>
+              <i />
+            </div>
+            <div className="conversion-word conversion-after">
+              <span>После</span>
+              <strong>привет</strong>
+            </div>
+            <div className="dictation-chip">
+              <span className="dictation-dot" aria-hidden="true" />
+              Диктовка готова — удерживайте <span className="keyboard-key">⌘</span>
             </div>
           </div>
         </section>
@@ -187,10 +183,12 @@ function App() {
 
         <section className="final-cta" aria-labelledby="download-title">
           <div className="final-cta-art" aria-hidden="true">
-            <span className="final-bar final-bar--blue" />
-            <span className="final-bar final-bar--violet" />
-            <span className="final-bar final-bar--coral" />
-            <span className="final-bar final-bar--lime" />
+            <span className="final-command">⌘</span>
+            <div className="final-conversion">
+              <span>ghbdtn</span>
+              <i>→</i>
+              <strong>привет</strong>
+            </div>
           </div>
           <div className="final-cta-copy">
             <p className="eyebrow">Готово к работе</p>

@@ -27,6 +27,30 @@ test("styles include responsive, focus, and reduced-motion safeguards", () => {
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
 });
 
+test("variant 4 presents the before and after conversion scene", () => {
+  for (const required of [
+    "conversion-demo",
+    "conversion-before",
+    "conversion-after",
+    "command-orbit",
+    "dictation-chip",
+    "ghbdtn",
+    "привет",
+  ]) assert.match(app, new RegExp(required));
+
+  for (const removed of ["document-stage", "document-demo", "color-bar", "final-bar"]) {
+    assert.doesNotMatch(app, new RegExp(removed));
+  }
+
+  assert.match(css, /@keyframes\s+flip-word/);
+  assert.match(css, /\.conversion-demo\b/);
+  assert.match(css, /--blue:\s*#[0-9a-f]{6}/i);
+  assert.match(css, /--violet:\s*#[0-9a-f]{6}/i);
+  assert.match(css, /@media\s*\(max-width:\s*900px\)/);
+  assert.match(css, /:focus-visible/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+});
+
 test("deployment workflow publishes the relative-base build to GitHub Pages", async () => {
   const workflow = await readFile(
     new URL("../.github/workflows/pages.yml", import.meta.url),
