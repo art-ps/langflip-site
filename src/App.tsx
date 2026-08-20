@@ -109,7 +109,7 @@ function App() {
                 Если передумали — <span className="keyboard-key">⌥⌘Z</span>.
               </p>
             </article>
-            <article className="feature-card feature-card--coral">
+            <article className="feature-card feature-card--periwinkle">
               <span className="feature-number" aria-hidden="true">03</span>
               <div className="feature-icon" aria-hidden="true">●)))</div>
               <h3>Диктуйте в любое окно</h3>
