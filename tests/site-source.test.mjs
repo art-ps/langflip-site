@@ -65,6 +65,27 @@ test("styles include responsive, focus, and reduced-motion safeguards", () => {
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
 });
 
+test("typography tokens keep Russian headings readable", () => {
+  const root = extractBlock(css, ":root");
+  const heroHeading = extractBlock(css, "h1 {");
+  const sectionHeading = extractBlock(css, "h2 {");
+  const heading = extractBlock(css, "h3 {");
+  const brand = extractBlock(css, ".brand");
+
+  assert.match(root, /^\s*font-family:\s*-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;\s*$/m);
+  assert.match(root, /^\s*--display-tracking:\s*-0\.025em;\s*$/m);
+  assert.match(root, /^\s*--display-line-height:\s*0\.96;\s*$/m);
+  assert.match(root, /^\s*--heading-tracking:\s*-0\.02em;\s*$/m);
+  assert.match(root, /^\s*--heading-line-height:\s*1;\s*$/m);
+
+  assert.match(heroHeading, /letter-spacing:\s*var\(--display-tracking\)/);
+  assert.match(heroHeading, /line-height:\s*var\(--display-line-height\)/);
+  assert.match(sectionHeading, /letter-spacing:\s*var\(--display-tracking\)/);
+  assert.match(sectionHeading, /line-height:\s*var\(--heading-line-height\)/);
+  assert.match(heading, /letter-spacing:\s*var\(--heading-tracking\)/);
+  assert.match(brand, /letter-spacing:\s*var\(--heading-tracking\)/);
+});
+
 test("variant 4 presents the before and after conversion scene", () => {
   for (const required of [
     "conversion-demo",

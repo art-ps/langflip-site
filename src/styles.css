@@ -1,7 +1,7 @@
 :root {
   color: #15172a;
   background: #f7f9ff;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --paper: #f7f9ff;
@@ -15,6 +15,10 @@
   --violet: #7857e9;
   --violet-soft: #efeaff;
   --shadow: 0 24px 70px #5463a517;
+  --display-tracking: -0.025em;
+  --display-line-height: 0.96;
+  --heading-tracking: -0.02em;
+  --heading-line-height: 1;
 }
 
 * { box-sizing: border-box; }
@@ -34,11 +38,11 @@ a:focus-visible { outline: 3px solid var(--violet); outline-offset: 4px; }
 h1, h2, h3, p { margin-top: 0; }
 h2 {
   font-size: clamp(2.5rem, 5vw, 4.7rem);
-  letter-spacing: -0.06em;
-  line-height: 0.98;
+  letter-spacing: var(--display-tracking);
+  line-height: var(--heading-line-height);
   margin-bottom: 24px;
 }
-h3 { font-size: 1.32rem; letter-spacing: -0.035em; line-height: 1.2; }
+h3 { font-size: 1.32rem; letter-spacing: var(--heading-tracking); line-height: 1.2; }
 
 .site-header {
   backdrop-filter: blur(20px);
@@ -63,7 +67,7 @@ h3 { font-size: 1.32rem; letter-spacing: -0.035em; line-height: 1.2; }
   font-size: 1.14rem;
   font-weight: 850;
   gap: 10px;
-  letter-spacing: -0.04em;
+  letter-spacing: var(--heading-tracking);
 }
 .brand img { border-radius: 11px; box-shadow: 0 6px 18px #39478024; }
 .header-nav { display: flex; font-size: 0.9rem; font-weight: 700; gap: 30px; }
@@ -130,8 +134,8 @@ h3 { font-size: 1.32rem; letter-spacing: -0.035em; line-height: 1.2; }
 }
 h1 {
   font-size: clamp(3.9rem, 7.8vw, 7.2rem);
-  letter-spacing: -0.082em;
-  line-height: 0.88;
+  letter-spacing: var(--display-tracking);
+  line-height: var(--display-line-height);
   margin: 0 auto;
   max-width: 1000px;
 }
