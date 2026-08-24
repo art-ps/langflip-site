@@ -59,3 +59,14 @@ test("the custom domain is declared exactly once, in CNAME", async () => {
   const cname = (await readFile(new URL("../public/CNAME", import.meta.url), "utf8")).trim();
   assert.equal(`https://${cname}/`, site.url, "CNAME and site.url disagree");
 });
+
+test("the site links nowhere private", async () => {
+  const app = await readFile(new URL("../src/App.tsx", import.meta.url), "utf8");
+  const llms = await readFile(new URL("../public/llms.txt", import.meta.url), "utf8");
+  const content = await readFile(new URL("../src/site-content.mjs", import.meta.url), "utf8");
+
+  // The repository is private: any link to it is a 404 for visitors.
+  for (const [name, source] of [["App.tsx", app], ["llms.txt", llms], ["site-content", content]]) {
+    assert.doesNotMatch(source, /github\.com/, `${name} links to the private repository`);
+  }
+});

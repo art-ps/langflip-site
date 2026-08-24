@@ -23,5 +23,4 @@
 ## Ссылки
 
 - Сайт: https://langflip.app/
-- Исходный код и релизы: https://github.com/art-ps/langflip
-- Приватность: https://github.com/art-ps/langflip/blob/master/PRIVACY.md
+- Скачать: кнопка на странице сайта (DMG для macOS 14+)

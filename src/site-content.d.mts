@@ -9,7 +9,6 @@ export interface Site {
   readonly url: string;
   readonly title: string;
   readonly description: string;
-  readonly repo: string;
 }
 
 export const site: Readonly<Site>;

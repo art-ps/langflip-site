@@ -4,7 +4,6 @@ export const site = Object.freeze({
   description:
     "Бесплатная локальная утилита для macOS: автоматически переключает неправильную раскладку" +
     " и диктует текст в любое окно. Без облака и подписки.",
-  repo: "https://github.com/art-ps/langflip",
 });
 
 export const release = Object.freeze({
@@ -36,6 +35,6 @@ export function softwareSchema() {
     inLanguage: "ru",
     isAccessibleForFree: true,
     offers: { "@type": "Offer", price: "0", priceCurrency: "RUB" },
-    author: { "@type": "Person", name: "Artem Pisarev", url: site.repo },
+    author: { "@type": "Person", name: "Artem Pisarev" },
   };
 }

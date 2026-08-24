@@ -213,10 +213,8 @@ function App({ base = import.meta.env.BASE_URL }: { base?: string }) {
         </a>
         <p>Версия {release.version}</p>
         <nav aria-label="Ссылки проекта">
-          <a href="https://github.com/art-ps/langflip" target="_blank" rel="noreferrer">GitHub</a>
-          <a href="https://github.com/art-ps/langflip/blob/master/PRIVACY.md" target="_blank" rel="noreferrer">
-            Политика приватности
-          </a>
+          <a href="#privacy">Приватность</a>
+          <a href="#install">Установка</a>
         </nav>
       </footer>
     </>
