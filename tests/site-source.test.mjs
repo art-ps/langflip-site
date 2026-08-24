@@ -50,8 +50,9 @@ test("page covers correction, dictation, privacy, and installation", () => {
     "id=\"privacy\"",
     "id=\"install\"",
     "Диктуйте в любое окно",
-    "whisper.cpp",
-    "1,5 ГБ",
+    "WhisperKit",
+    "626 МБ",
+    "Punto Switcher",
     "⌥⌘Z",
     "Input Monitoring",
     "Accessibility",
@@ -224,4 +225,21 @@ test("deployment workflow uses least privilege, tests first, and immutable actio
   ]) assert.match(workflow, new RegExp(action.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 
   assert.doesNotMatch(workflow, /uses:\s*[^\s@]+@v\d+\b/);
+});
+
+test("the build prerenders the page instead of shipping an empty root", async () => {
+  const pkg = JSON.parse(
+    await readFile(new URL("../package.json", import.meta.url), "utf8"),
+  );
+  const prerender = await readFile(new URL("../scripts/prerender.mjs", import.meta.url), "utf8");
+  const entry = await readFile(new URL("../src/entry-server.tsx", import.meta.url), "utf8");
+  const main = await readFile(new URL("../src/main.tsx", import.meta.url), "utf8");
+
+  assert.match(pkg.scripts.build, /vite build --ssr src\/entry-server\.tsx/);
+  assert.match(pkg.scripts.build, /node scripts\/prerender\.mjs/);
+  assert.match(prerender, /application\/ld\+json/);
+  // The SSR build reports BASE_URL as "/", which the Pages subpath cannot serve.
+  assert.match(entry, /render\(base = "\.\/"\)/);
+  assert.match(viteConfig, /base:\s*["']\.\/["']/);
+  assert.match(main, /hydrateRoot/);
 });

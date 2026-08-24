@@ -17,4 +17,14 @@ Workflow `.github/workflows/pages.yml` собирает сайт и публик
 
 ## Обновление релиза
 
-Встроенный установщик — `public/LangFlip-0.2.1.dmg`; он берётся из сборки приложения LangFlip (`/Users/artem/projects/LangFlip/build/LangFlip-0.2.1.dmg`). Чтобы заменить релиз, обновите DMG в `public/` и метаданные версии/имени в `src/site-content.mjs`.
+Встроенный установщик — `public/LangFlip-<версия>.dmg`; он берётся из сборки приложения LangFlip (`/Users/artem/projects/LangFlip/build/`). Чтобы заменить релиз:
+
+1. положите новый DMG в `public/`, удалите старый;
+2. обновите `release` в `src/site-content.mjs` (версия, имя файла, размер);
+3. поправьте ожидаемые значения в `tests/site-content.test.mjs` и прогоните `npm test`.
+
+Версия попадает и в текст страницы, и в JSON-LD `SoftwareApplication` — из одного места.
+
+## Пререндер
+
+`npm run build` собирает клиент, затем SSR-бандл (`src/entry-server.tsx`) и запекает разметку вместе с JSON-LD в `dist/index.html` (`scripts/prerender.mjs`). Без этого шага краулеры, не исполняющие JS, видят пустой `<div id="root">`. На клиенте `main.tsx` гидратирует готовую разметку.

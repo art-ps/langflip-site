@@ -7,8 +7,10 @@ const privacyItems = [
   "Защищённые поля исключаются из обработки.",
 ];
 
-function App() {
-  const href = downloadHref(import.meta.env.BASE_URL);
+/// `base` is a parameter because Vite rewrites BASE_URL to "/" in the SSR build used by
+/// the prerender step, which would bake an absolute link the Pages subpath cannot serve.
+function App({ base = import.meta.env.BASE_URL }: { base?: string }) {
+  const href = downloadHref(base);
 
   return (
     <>
@@ -39,12 +41,12 @@ function App() {
                 <span>Бесплатно для macOS</span>
               </div>
             </div>
-            <p className="eyebrow">Печатайте, не переключаясь</p>
+            <p className="eyebrow">Аналог Punto Switcher для macOS</p>
             <h1 id="hero-title">Исправляет раскладку, пока вы печатаете.</h1>
             <p className="hero-description">
               LangFlip замечает слова в неправильной раскладке, исправляет их автоматически
-              и по двойному нажатию <span className="keyboard-key">⌘</span>. Диктовка работает
-              локально и включается по желанию.
+              и по двойному нажатию <span className="keyboard-key">⌘</span>. Автопереключение
+              раскладки и диктовка работают локально на Mac и включаются по желанию.
             </p>
             <a className="download-button" href={href} download>
               Скачать LangFlip {release.version}
@@ -123,8 +125,9 @@ function App() {
             <p className="eyebrow">Локальная диктовка</p>
             <h2 id="dictation-title">Голос превращается в текст прямо на Mac</h2>
             <p>
-              Распознавание работает через <strong>whisper.cpp</strong>. Функция включается по желанию,
-              а модель размером около <strong>1,5 ГБ</strong> загружается один раз отдельно.
+              Распознавание работает через <strong>WhisperKit</strong> на Neural Engine — процессоре,
+              который есть в каждом Mac на Apple Silicon. Функция включается по желанию, а модель
+              размером около <strong>626 МБ</strong> загружается один раз отдельно.
             </p>
           </div>
           <ol className="dictation-steps" aria-label="Как пользоваться диктовкой">
@@ -156,7 +159,7 @@ function App() {
           <div className="section-heading install-heading">
             <p className="eyebrow">Четыре шага</p>
             <h2 id="install-title">Установите и продолжайте печатать</h2>
-            <p>Текущая сборка имеет developer-подпись, но пока не нотарифицирована Apple.</p>
+            <p>Текущая сборка имеет developer-подпись, но пока не нотаризована Apple.</p>
           </div>
           <ol className="install-steps">
             <li>
