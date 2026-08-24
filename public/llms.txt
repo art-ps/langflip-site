@@ -22,6 +22,6 @@
 
 ## Ссылки
 
-- Сайт: https://art-ps.github.io/langflip-site/
+- Сайт: https://langflip.app/
 - Исходный код и релизы: https://github.com/art-ps/langflip
 - Приватность: https://github.com/art-ps/langflip/blob/master/PRIVACY.md
