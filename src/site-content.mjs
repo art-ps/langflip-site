@@ -1,5 +1,5 @@
 export const site = Object.freeze({
-  url: "https://art-ps.github.io/langflip-site/",
+  url: "https://langflip.app/",
   title: "LangFlip — аналог Punto Switcher для macOS: исправление раскладки и диктовка",
   description:
     "Бесплатная локальная утилита для macOS: автоматически переключает неправильную раскладку" +

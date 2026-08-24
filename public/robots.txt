@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://art-ps.github.io/langflip-site/sitemap.xml
+Sitemap: https://langflip.app/sitemap.xml

@@ -48,9 +48,14 @@ test("crawler files point at the canonical URL", async () => {
   const sitemap = await readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8");
   const llms = await readFile(new URL("../public/llms.txt", import.meta.url), "utf8");
 
-  assert.match(robots, /^Sitemap: https:\/\/art-ps\.github\.io\/langflip-site\/sitemap\.xml$/m);
+  assert.match(robots, new RegExp(`^Sitemap: ${site.url}sitemap\\.xml$`, "m"));
   assert.match(sitemap, /xmlns="http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9"/);
   assert.match(sitemap, new RegExp(`<loc>${site.url}</loc>`));
   assert.match(llms, /# LangFlip/);
   assert.match(llms, /WhisperKit/);
+});
+
+test("the custom domain is declared exactly once, in CNAME", async () => {
+  const cname = (await readFile(new URL("../public/CNAME", import.meta.url), "utf8")).trim();
+  assert.equal(`https://${cname}/`, site.url, "CNAME and site.url disagree");
 });
