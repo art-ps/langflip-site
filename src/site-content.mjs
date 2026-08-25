@@ -7,8 +7,8 @@ export const site = Object.freeze({
 });
 
 export const release = Object.freeze({
-  version: "0.3.2",
-  fileName: "LangFlip-0.3.2.dmg",
+  version: "0.3.3",
+  fileName: "LangFlip-0.3.3.dmg",
   sizeLabel: "5,4 МБ",
   macOS: "macOS 14+",
 });

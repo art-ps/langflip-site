@@ -1,26 +1,30 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir, stat } from "node:fs/promises";
 import { downloadHref, release, site, softwareSchema } from "../src/site-content.mjs";
 
-test("release metadata describes the shipped DMG", () => {
-  assert.deepEqual(release, {
-    version: "0.3.2",
-    fileName: "LangFlip-0.3.2.dmg",
-    sizeLabel: "5,4 МБ",
-    macOS: "macOS 14+",
-  });
+const publicDir = new URL("../public/", import.meta.url);
+
+// Checked against the file on disk rather than a copy of the version number:
+// otherwise every release means editing the test too, and a stale test that
+// still passes is worse than no test.
+test("release metadata matches the DMG actually shipped in public/", async () => {
+  const images = (await readdir(publicDir)).filter((name) => name.endsWith(".dmg"));
+  assert.deepEqual(images, [release.fileName], "public/ must hold exactly the linked DMG");
+
+  assert.equal(release.fileName, `LangFlip-${release.version}.dmg`);
+  assert.match(release.version, /^\d+\.\d+\.\d+$/);
+
+  const { size } = await stat(new URL(release.fileName, publicDir));
+  assert.ok(size > 1_000_000, "bundled DMG looks truncated");
+  const megabytes = (size / (1024 * 1024)).toFixed(1).replace(".", ",");
+  assert.equal(release.sizeLabel, `${megabytes} МБ`, "size label drifted from the file");
 });
 
 test("downloadHref preserves root and GitHub Pages bases", () => {
-  assert.equal(downloadHref("/"), "/LangFlip-0.3.2.dmg");
-  assert.equal(downloadHref("/langflip-site/"), "/langflip-site/LangFlip-0.3.2.dmg");
-  assert.equal(downloadHref("./"), "./LangFlip-0.3.2.dmg");
-});
-
-test("the DMG the page links to is the one in public/", async () => {
-  const stat = await readFile(new URL(`../public/${release.fileName}`, import.meta.url));
-  assert.ok(stat.byteLength > 1_000_000, "bundled DMG looks truncated");
+  assert.equal(downloadHref("/"), `/${release.fileName}`);
+  assert.equal(downloadHref("/langflip-site/"), `/langflip-site/${release.fileName}`);
+  assert.equal(downloadHref("./"), `./${release.fileName}`);
 });
 
 test("structured data matches the shipped release", () => {
