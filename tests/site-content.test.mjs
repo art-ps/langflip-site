@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile, readdir, stat } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { downloadHref, release, site, softwareSchema } from "../src/site-content.mjs";
 
 const publicDir = new URL("../public/", import.meta.url);
@@ -73,4 +75,20 @@ test("the site links nowhere private", async () => {
   for (const [name, source] of [["App.tsx", app], ["llms.txt", llms], ["site-content", content]]) {
     assert.doesNotMatch(source, /github\.com/, `${name} links to the private repository`);
   }
+});
+
+// Runs the real script: if it stops deriving the release from the file in public/,
+// this either throws or leaves site-content rewritten, and git shows the damage.
+test("sync-release leaves an already-synced site untouched", async () => {
+  const pkg = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
+  assert.equal(pkg.scripts["sync-release"], "node scripts/sync-release.mjs");
+
+  const before = await readFile(new URL("../src/site-content.mjs", import.meta.url), "utf8");
+  const { stdout } = await promisify(execFile)("node", ["scripts/sync-release.mjs"], {
+    cwd: new URL("..", import.meta.url),
+  });
+  const after = await readFile(new URL("../src/site-content.mjs", import.meta.url), "utf8");
+
+  assert.match(stdout, new RegExp(`already in sync: ${release.version}`));
+  assert.equal(after, before, "sync-release rewrote a file that was already correct");
 });
