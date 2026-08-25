@@ -1,33 +1,41 @@
-import { downloadHref, release } from "./site-content.mjs";
+import { copy, downloadHref, meta, release } from "./site-content.mjs";
 
-const privacyItems = [
-  "Исправление и распознавание речи работают локально на Mac.",
-  "Нажатия клавиш и полный текст полей не сохраняются.",
-  "Нет аналитики, облачного API и отправки текста на сервер.",
-  "Защищённые поля исключаются из обработки.",
-];
+type Locale = "ru" | "en";
 
-/// `base` is a parameter because Vite rewrites BASE_URL to "/" in the SSR build used by
-/// the prerender step, which would bake an absolute link the Pages subpath cannot serve.
-function App({ base = import.meta.env.BASE_URL }: { base?: string }) {
-  const href = downloadHref(base);
+/// `assets` is a parameter because Vite rewrites BASE_URL to "/" in the SSR build used by
+/// the prerender step, and because the English page sits one directory deeper: both need
+/// their own prefix for the files served next to the HTML.
+function App({
+  locale = "ru",
+  assets = import.meta.env.BASE_URL,
+}: {
+  locale?: Locale;
+  assets?: string;
+}) {
+  const t = copy[locale];
+  const { docsHref, switchHref } = meta[locale];
+  const href = downloadHref();
+  const icon = `${assets.endsWith("/") ? assets : `${assets}/`}langflip-icon.png`;
 
   return (
     <>
       <header className="site-header">
         <div className="header-inner">
-          <a className="brand" href="#top" aria-label="LangFlip: к началу страницы">
-            <img src="./langflip-icon.png" alt="Иконка приложения LangFlip" width="42" height="42" />
+          <a className="brand" href="#top" aria-label={t.backToTop}>
+            <img src={icon} alt={t.iconAlt} width="42" height="42" />
             <span>LangFlip</span>
           </a>
-          <nav className="header-nav" aria-label="Основная навигация">
-            <a href="#features">Возможности</a>
-            <a href="#privacy">Приватность</a>
-            <a href="#install">Установка</a>
-            <a href="/docs/">Документация</a>
+          <nav className="header-nav" aria-label={t.navLabel}>
+            <a href="#features">{t.navFeatures}</a>
+            <a href="#privacy">{t.navPrivacy}</a>
+            <a href="#install">{t.navInstall}</a>
+            {docsHref ? <a href={docsHref}>{t.navDocs}</a> : null}
+            <a className="language-switch" href={switchHref} aria-label={t.languageLabel}>
+              {t.languageSwitch}
+            </a>
           </nav>
-          <a className="header-download" href={href} download>
-            Скачать
+          <a className="header-download" href={href}>
+            {t.navDownload}
           </a>
         </div>
       </header>
@@ -36,40 +44,36 @@ function App({ base = import.meta.env.BASE_URL }: { base?: string }) {
         <section className="hero" aria-labelledby="hero-title">
           <div className="hero-copy">
             <div className="product-badge">
-              <img src="./langflip-icon.png" alt="Иконка LangFlip для macOS" width="48" height="48" />
+              <img src={icon} alt={t.heroIconAlt} width="48" height="48" />
               <div>
                 <strong>LangFlip</strong>
-                <span>Бесплатно для macOS</span>
+                <span>{t.badgeFree}</span>
               </div>
             </div>
-            <p className="eyebrow">Аналог Punto Switcher для macOS</p>
-            <h1 id="hero-title">Исправляет раскладку, пока вы печатаете.</h1>
+            <p className="eyebrow">{t.heroEyebrow}</p>
+            <h1 id="hero-title">{t.heroTitle}</h1>
             <p className="hero-description">
-              LangFlip замечает слова в неправильной раскладке, исправляет их автоматически
-              и по двойному нажатию <span className="keyboard-key">⌘</span>. Автопереключение
-              раскладки и диктовка работают локально на Mac и включаются по желанию.
+              {t.heroDescriptionBefore} <span className="keyboard-key">⌘</span>
+              {t.heroDescriptionAfter}
             </p>
-            <a className="download-button" href={href} download>
-              Скачать LangFlip {release.version}
+            <a className="download-button" href={href}>
+              {t.downloadCta}
               <span aria-hidden="true">↓</span>
             </a>
             <p className="release-note">
               {release.macOS} <span aria-hidden="true">·</span> DMG <span aria-hidden="true">·</span>{" "}
-              около {release.sizeLabel}
+              {t.releaseNoteSize}
             </p>
           </div>
 
-          <div
-            className="conversion-demo"
-            aria-label="Демонстрация исправления раскладки: ghbdtn превращается в привет по двойному нажатию Command"
-          >
+          <div className="conversion-demo" aria-label={t.demoLabel}>
             <div className="conversion-glow" aria-hidden="true" />
             <div className="command-orbit" aria-hidden="true">
               <span>⌘</span>
               <span>⌘</span>
             </div>
             <div className="conversion-word conversion-before">
-              <span>До</span>
+              <span>{t.demoBefore}</span>
               <strong>ghbdtn</strong>
             </div>
             <div className="conversion-pulse" aria-hidden="true">
@@ -78,75 +82,74 @@ function App({ base = import.meta.env.BASE_URL }: { base?: string }) {
               <i />
             </div>
             <div className="conversion-word conversion-after">
-              <span>После</span>
+              <span>{t.demoAfter}</span>
               <strong>привет</strong>
             </div>
             <div className="dictation-chip">
               <span className="dictation-dot" aria-hidden="true" />
-              Диктовка готова — удерживайте <span className="keyboard-key">⌘</span>
+              {t.dictationChip} <span className="keyboard-key">⌘</span>
             </div>
           </div>
         </section>
 
         <section className="features section-shell" id="features" aria-labelledby="features-title">
           <div className="section-heading">
-            <p className="eyebrow">Три способа писать быстрее</p>
-            <h2 id="features-title">Не отвлекайтесь от мысли</h2>
-            <p>LangFlip берёт на себя раскладку и ввод — незаметно, когда не нужен, и всегда под рукой.</p>
+            <p className="eyebrow">{t.featuresEyebrow}</p>
+            <h2 id="features-title">{t.featuresTitle}</h2>
+            <p>{t.featuresLead}</p>
           </div>
           <div className="feature-grid">
             <article className="feature-card feature-card--blue">
               <span className="feature-number" aria-hidden="true">01</span>
               <div className="feature-icon" aria-hidden="true">А↔A</div>
-              <h3>Исправляет автоматически</h3>
-              <p>Распознаёт слово в неправильной русской или английской раскладке и заменяет его на верное.</p>
+              <h3>{t.feature1Title}</h3>
+              <p>{t.feature1Body}</p>
             </article>
             <article className="feature-card feature-card--violet">
               <span className="feature-number" aria-hidden="true">02</span>
               <div className="feature-icon feature-keys" aria-hidden="true">
                 <span>⌘</span><span>⌘</span>
               </div>
-              <h3>Переключает вручную</h3>
+              <h3>{t.feature2Title}</h3>
               <p>
-                Дважды нажмите <span className="keyboard-key">⌘</span>, чтобы преобразовать последнее слово.
-                Если передумали — <span className="keyboard-key">⌥⌘Z</span>.
+                {t.feature2Before} <span className="keyboard-key">⌘</span>
+                {t.feature2Middle} <span className="keyboard-key">⌥⌘Z</span>.
               </p>
             </article>
             <article className="feature-card feature-card--periwinkle">
               <span className="feature-number" aria-hidden="true">03</span>
               <div className="feature-icon" aria-hidden="true">●)))</div>
-              <h3>Диктуйте в любое окно</h3>
-              <p>Удерживайте ⌘ и говорите: текст появится в активном поле любого приложения.</p>
+              <h3>{t.feature3Title}</h3>
+              <p>{t.feature3Body}</p>
             </article>
           </div>
         </section>
 
         <section className="dictation section-shell" aria-labelledby="dictation-title">
           <div className="dictation-copy">
-            <p className="eyebrow">Локальная диктовка</p>
-            <h2 id="dictation-title">Голос превращается в текст прямо на Mac</h2>
+            <p className="eyebrow">{t.dictationEyebrow}</p>
+            <h2 id="dictation-title">{t.dictationTitle}</h2>
             <p>
-              Распознавание работает через <strong>WhisperKit</strong> на Neural Engine — процессоре,
-              который есть в каждом Mac на Apple Silicon. Функция включается по желанию, а модель
-              размером около <strong>626 МБ</strong> загружается один раз отдельно.
+              {t.dictationBodyBefore} <strong>WhisperKit</strong> {t.dictationBodyMiddle}{" "}
+              <strong>{t.dictationModelSize}</strong> {t.dictationBodyAfter}
             </p>
           </div>
-          <ol className="dictation-steps" aria-label="Как пользоваться диктовкой">
-            <li><span>1</span><strong>Удерживайте</strong><small>клавишу ⌘</small></li>
-            <li><span>2</span><strong>Говорите</strong><small>в обычном темпе</small></li>
-            <li><span>3</span><strong>Отпустите</strong><small>текст появится в поле</small></li>
+          <ol className="dictation-steps" aria-label={t.dictationStepsLabel}>
+            <li><span>1</span><strong>{t.dictationStep1}</strong><small>{t.dictationStep1Note}</small></li>
+            <li><span>2</span><strong>{t.dictationStep2}</strong><small>{t.dictationStep2Note}</small></li>
+            <li><span>3</span><strong>{t.dictationStep3}</strong><small>{t.dictationStep3Note}</small></li>
           </ol>
         </section>
 
         <section className="privacy" id="privacy" aria-labelledby="privacy-title">
           <div className="privacy-inner">
             <div className="privacy-intro">
-              <p className="eyebrow">Приватность по умолчанию</p>
-              <h2 id="privacy-title">Ваш текст не покидает Mac</h2>
-              <p>Никаких аккаунтов и скрытой отправки данных. Только локальная обработка.</p>
+              <p className="eyebrow">{t.privacyEyebrow}</p>
+              <h2 id="privacy-title">{t.privacyTitle}</h2>
+              <p>{t.privacyLead}</p>
             </div>
             <ul className="privacy-list">
-              {privacyItems.map((item, index) => (
+              {t.privacyItems.map((item, index) => (
                 <li key={item}>
                   <span aria-hidden="true">0{index + 1}</span>
                   <p>{item}</p>
@@ -158,29 +161,26 @@ function App({ base = import.meta.env.BASE_URL }: { base?: string }) {
 
         <section className="install section-shell" id="install" aria-labelledby="install-title">
           <div className="section-heading install-heading">
-            <p className="eyebrow">Четыре шага</p>
-            <h2 id="install-title">Установите и продолжайте печатать</h2>
-            <p>Текущая сборка имеет developer-подпись, но пока не нотаризована Apple.</p>
+            <p className="eyebrow">{t.installEyebrow}</p>
+            <h2 id="install-title">{t.installTitle}</h2>
+            <p>{t.installLead}</p>
           </div>
           <ol className="install-steps">
             <li>
               <span className="step-number">01</span>
-              <div><h3>Перенесите приложение</h3><p>Откройте DMG и перетащите LangFlip в папку Applications.</p></div>
+              <div><h3>{t.install1Title}</h3><p>{t.install1Body}</p></div>
             </li>
             <li>
               <span className="step-number">02</span>
-              <div><h3>Откройте через меню</h3><p>При первом запуске нажмите Правой кнопкой → Открыть и подтвердите запуск.</p></div>
+              <div><h3>{t.install2Title}</h3><p>{t.install2Body}</p></div>
             </li>
             <li>
               <span className="step-number">03</span>
-              <div>
-                <h3>Разрешите доступ</h3>
-                <p>Включите Input Monitoring и Accessibility. Микрофон нужен только для диктовки.</p>
-              </div>
+              <div><h3>{t.install3Title}</h3><p>{t.install3Body}</p></div>
             </li>
             <li>
               <span className="step-number">04</span>
-              <div><h3>Выберите раскладки</h3><p>Укажите русскую и английскую раскладки и при желании загрузите речевую модель.</p></div>
+              <div><h3>{t.install4Title}</h3><p>{t.install4Body}</p></div>
             </li>
           </ol>
         </section>
@@ -195,28 +195,29 @@ function App({ base = import.meta.env.BASE_URL }: { base?: string }) {
             </div>
           </div>
           <div className="final-cta-copy">
-            <p className="eyebrow">Готово к работе</p>
-            <h2 id="download-title">Печатайте на двух языках без лишних переключений</h2>
-            <p>Бесплатно. Без подписки. Данные остаются на Mac.</p>
-            <a className="download-button download-button--dark" href={href} download>
-              Скачать LangFlip {release.version}
+            <p className="eyebrow">{t.finalEyebrow}</p>
+            <h2 id="download-title">{t.finalTitle}</h2>
+            <p>{t.finalLead}</p>
+            <a className="download-button download-button--dark" href={href}>
+              {t.downloadCta}
               <span aria-hidden="true">↓</span>
             </a>
-            <small>{release.macOS} · около {release.sizeLabel}</small>
+            <small>{release.macOS} · {t.releaseNoteSize}</small>
           </div>
         </section>
       </main>
 
       <footer className="site-footer">
-        <a className="brand footer-brand" href="#top" aria-label="LangFlip: к началу страницы">
-          <img src="./langflip-icon.png" alt="Иконка приложения LangFlip" width="36" height="36" />
+        <a className="brand footer-brand" href="#top" aria-label={t.backToTop}>
+          <img src={icon} alt={t.iconAlt} width="36" height="36" />
           <span>LangFlip</span>
         </a>
-        <p>Версия {release.version}</p>
-        <nav aria-label="Ссылки проекта">
-          <a href="/docs/">Документация</a>
-          <a href="#privacy">Приватность</a>
-          <a href="#install">Установка</a>
+        <p>{t.footerVersion}</p>
+        <nav aria-label={t.footerLinksLabel}>
+          {docsHref ? <a href={docsHref}>{t.navDocs}</a> : null}
+          <a href="#privacy">{t.navPrivacy}</a>
+          <a href="#install">{t.navInstall}</a>
+          <a href={switchHref}>{t.languageSwitch}</a>
         </nav>
       </footer>
     </>

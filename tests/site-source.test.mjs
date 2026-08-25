@@ -1,8 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { copy } from "../src/site-content.mjs";
 
 const app = await readFile(new URL("../src/App.tsx", import.meta.url), "utf8");
+const russian = Object.values(copy.ru).flat().join("\n");
+const english = Object.values(copy.en).flat().join("\n");
 const css = await readFile(new URL("../src/styles.css", import.meta.url), "utf8");
 const viteConfig = await readFile(new URL("../vite.config.ts", import.meta.url), "utf8");
 
@@ -45,19 +48,27 @@ function contrastRatio(first, second) {
 }
 
 test("page covers correction, dictation, privacy, and installation", () => {
+  for (const required of ["id=\"features\"", "id=\"privacy\"", "id=\"install\"", "WhisperKit", "⌥⌘Z"]) {
+    assert.match(app, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
+
   for (const required of [
-    "id=\"features\"",
-    "id=\"privacy\"",
-    "id=\"install\"",
     "Диктуйте в любое окно",
-    "WhisperKit",
     "626 МБ",
     "Punto Switcher",
-    "⌥⌘Z",
     "Input Monitoring",
     "Accessibility",
     "Правой кнопкой",
-  ]) assert.match(app, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  ]) assert.match(russian, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+
+  for (const required of [
+    "Dictate into any window",
+    "626 MB",
+    "Punto Switcher",
+    "Input Monitoring",
+    "Accessibility",
+    "Right click",
+  ]) assert.match(english, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 });
 
 test("styles include responsive, focus, and reduced-motion safeguards", () => {
@@ -239,7 +250,8 @@ test("the build prerenders the page instead of shipping an empty root", async ()
   assert.match(pkg.scripts.build, /node scripts\/prerender\.mjs/);
   assert.match(prerender, /application\/ld\+json/);
   // The SSR build reports BASE_URL as "/", which the Pages subpath cannot serve.
-  assert.match(entry, /render\(base = "\.\/"\)/);
+  assert.match(entry, /render\(locale: "ru" \| "en" = "ru", assets = "\.\/"\)/);
+  assert.match(prerender, /for \(const locale of locales\)/);
   assert.match(viteConfig, /base:\s*["']\.\/["']/);
   assert.match(main, /hydrateRoot/);
 });

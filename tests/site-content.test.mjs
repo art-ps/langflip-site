@@ -3,49 +3,100 @@ import assert from "node:assert/strict";
 import { readFile, readdir, stat } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { downloadHref, release, site, softwareSchema } from "../src/site-content.mjs";
+import {
+  copy,
+  downloadHref,
+  locales,
+  localeUrl,
+  meta,
+  release,
+  site,
+  softwareSchema,
+} from "../src/site-content.mjs";
+import { headTags } from "../src/head.mjs";
 
 const publicDir = new URL("../public/", import.meta.url);
 
-// Checked against the file on disk rather than a copy of the version number:
-// otherwise every release means editing the test too, and a stale test that
-// still passes is worse than no test.
-test("release metadata matches the DMG actually shipped in public/", async () => {
-  const images = (await readdir(publicDir)).filter((name) => name.endsWith(".dmg"));
-  assert.deepEqual(images, [release.fileName], "public/ must hold exactly the linked DMG");
-
+// The DMG ships as a GitHub release asset, not from this repository, so the version is
+// checked for internal consistency instead: a mismatch here points the only button on
+// the page at a tag that does not exist.
+test("release metadata is self-consistent and no DMG is committed", async () => {
   assert.equal(release.fileName, `LangFlip-${release.version}.dmg`);
   assert.match(release.version, /^\d+\.\d+\.\d+$/);
+  assert.match(release.sizeLabel, /^\d+,\d МБ$/);
+  assert.match(release.sizeLabelEn, /^\d+\.\d MB$/);
 
-  const { size } = await stat(new URL(release.fileName, publicDir));
-  assert.ok(size > 1_000_000, "bundled DMG looks truncated");
-  const megabytes = (size / (1024 * 1024)).toFixed(1).replace(".", ",");
-  assert.equal(release.sizeLabel, `${megabytes} МБ`, "size label drifted from the file");
+  const images = (await readdir(publicDir)).filter((name) => name.endsWith(".dmg"));
+  assert.deepEqual(images, [], "the DMG belongs to the release, not to public/");
 });
 
-test("downloadHref preserves root and GitHub Pages bases", () => {
-  assert.equal(downloadHref("/"), `/${release.fileName}`);
-  assert.equal(downloadHref("/langflip-site/"), `/langflip-site/${release.fileName}`);
-  assert.equal(downloadHref("./"), `./${release.fileName}`);
+test("downloadHref points at the release asset for the shipped version", () => {
+  assert.equal(
+    downloadHref(),
+    `https://github.com/art-ps/langflip-site/releases/download/v${release.version}/${release.fileName}`,
+  );
 });
 
-test("structured data matches the shipped release", () => {
-  const schema = softwareSchema();
-  assert.equal(schema["@type"], "SoftwareApplication");
-  assert.equal(schema.softwareVersion, release.version);
-  assert.equal(schema.downloadUrl, `${site.url}${release.fileName}`);
-  assert.equal(schema.offers.price, "0");
+test("structured data matches the shipped release, per locale", () => {
+  for (const locale of locales) {
+    const schema = softwareSchema(locale);
+    assert.equal(schema["@type"], "SoftwareApplication");
+    assert.equal(schema.softwareVersion, release.version);
+    assert.equal(schema.downloadUrl, downloadHref());
+    assert.equal(schema.url, localeUrl(locale));
+    assert.equal(schema.inLanguage, meta[locale].lang);
+    assert.equal(schema.offers.price, "0");
+  }
 });
 
-test("head metadata is absolute and agrees with site content", async () => {
+test("the html template leaves head metadata to the prerender", async () => {
   const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
 
-  assert.match(html, new RegExp(`<link rel="canonical" href="${site.url}"`));
-  assert.match(html, new RegExp(`<title>${site.title}</title>`));
-  assert.match(html, new RegExp(`name="description" content="${site.description}"`));
-  // Relative og:image URLs are not resolved by every preview bot.
-  for (const property of ["og:image", "twitter:image"]) {
-    assert.match(html, new RegExp(`"${property}" content="https://`));
+  assert.match(html, /<!--seo-->/, "the prerender needs its placeholder");
+  assert.match(html, /<title>LangFlip<\/title>/);
+  assert.doesNotMatch(html, /canonical/, "canonical is generated per locale");
+});
+
+test("generated head metadata is absolute and per-locale", () => {
+  for (const locale of locales) {
+    const tags = headTags(locale);
+    const localeMeta = meta[locale];
+
+    assert.match(tags, new RegExp(`<link rel="canonical" href="${localeUrl(locale)}" />`));
+    assert.match(tags, new RegExp(`property="og:locale" content="${localeMeta.ogLocale}"`));
+    assert.match(tags, new RegExp(`name="description" content="${localeMeta.description}"`));
+    // Relative og:image URLs are not resolved by every preview bot.
+    for (const property of ["og:image", "twitter:image"]) {
+      assert.match(tags, new RegExp(`"${property}" content="https://`));
+    }
+    // Every locale must advertise every other one, or Google keeps serving the wrong page.
+    for (const other of locales) {
+      assert.match(tags, new RegExp(`hreflang="${meta[other].lang}" href="${localeUrl(other)}"`));
+    }
+    assert.match(tags, new RegExp(`hreflang="x-default" href="${site.url}"`));
+  }
+});
+
+test("both locales carry the same set of strings", () => {
+  const [first, ...rest] = locales.map((locale) => Object.keys(copy[locale]).sort());
+  for (const keys of rest) assert.deepEqual(keys, first, "a locale is missing a translation");
+
+  for (const locale of locales) {
+    for (const [key, value] of Object.entries(copy[locale])) {
+      const strings = Array.isArray(value) ? value : [value];
+      for (const string of strings) {
+        assert.ok(string.trim().length > 0, `${locale}.${key} is empty`);
+      }
+    }
+  }
+
+  // The English page must not fall back to Russian sentences.
+  const english = Object.entries(copy.en).filter(([key]) => !["demoLabel", "languageSwitch"].includes(key));
+  for (const [key, value] of english) {
+    const strings = Array.isArray(value) ? value : [value];
+    for (const string of strings) {
+      assert.doesNotMatch(string, /[а-яё]/i, `en.${key} still contains Russian text`);
+    }
   }
 });
 
@@ -57,6 +108,9 @@ test("crawler files point at the canonical URL", async () => {
   assert.match(robots, new RegExp(`^Sitemap: ${site.url}sitemap\\.xml$`, "m"));
   assert.match(sitemap, /xmlns="http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9"/);
   assert.match(sitemap, new RegExp(`<loc>${site.url}</loc>`));
+  for (const locale of locales) {
+    assert.match(sitemap, new RegExp(`<loc>${localeUrl(locale)}</loc>`), `${locale} is missing`);
+  }
   assert.match(llms, /# LangFlip/);
   assert.match(llms, /WhisperKit/);
 });
@@ -71,9 +125,12 @@ test("the site links nowhere private", async () => {
   const llms = await readFile(new URL("../public/llms.txt", import.meta.url), "utf8");
   const content = await readFile(new URL("../src/site-content.mjs", import.meta.url), "utf8");
 
-  // The repository is private: any link to it is a 404 for visitors.
+  // The app repository is private: any link to it is a 404 for visitors. The site
+  // repository is public and hosts the release asset, so only that one may be linked.
   for (const [name, source] of [["App.tsx", app], ["llms.txt", llms], ["site-content", content]]) {
-    assert.doesNotMatch(source, /github\.com/, `${name} links to the private repository`);
+    for (const link of source.match(/https:\/\/github\.com\/[^\s"')]+/g) ?? []) {
+      assert.match(link, /^https:\/\/github\.com\/art-ps\/langflip-site\//, `${name} links to ${link}`);
+    }
   }
 });
 

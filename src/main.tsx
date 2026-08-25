@@ -4,9 +4,13 @@ import App from "./App";
 import "./styles.css";
 
 const root = document.getElementById("root")!;
+// The locale comes from the URL, not from a build flag: one bundle serves both pages,
+// and hydrating /en/ with the Russian copy would swap the text under the reader.
+const locale = window.location.pathname.startsWith("/en") ? "en" : "ru";
+const assets = locale === "en" ? "../" : "./";
 const tree = (
   <StrictMode>
-    <App />
+    <App locale={locale} assets={assets} />
   </StrictMode>
 );
 
