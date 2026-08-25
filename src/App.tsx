@@ -24,6 +24,7 @@ function App({ base = import.meta.env.BASE_URL }: { base?: string }) {
             <a href="#features">Возможности</a>
             <a href="#privacy">Приватность</a>
             <a href="#install">Установка</a>
+            <a href="/docs/">Документация</a>
           </nav>
           <a className="header-download" href={href} download>
             Скачать
@@ -213,6 +214,7 @@ function App({ base = import.meta.env.BASE_URL }: { base?: string }) {
         </a>
         <p>Версия {release.version}</p>
         <nav aria-label="Ссылки проекта">
+          <a href="/docs/">Документация</a>
           <a href="#privacy">Приватность</a>
           <a href="#install">Установка</a>
         </nav>

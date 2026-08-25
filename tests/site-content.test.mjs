@@ -92,3 +92,22 @@ test("sync-release leaves an already-synced site untouched", async () => {
   assert.match(stdout, new RegExp(`already in sync: ${release.version}`));
   assert.equal(after, before, "sync-release rewrote a file that was already correct");
 });
+
+test("the sitemap lists exactly the documentation pages that exist", async () => {
+  const docsDir = new URL("../docs/", import.meta.url);
+  const pages = (await readdir(docsDir))
+    .filter((name) => name.endsWith(".md"))
+    .map((name) => (name === "index.md" ? "docs/" : `docs/${name.replace(/\.md$/, "")}`));
+
+  const sitemap = await readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8");
+  const listed = [...sitemap.matchAll(/<loc>https:\/\/langflip\.app\/([^<]*)<\/loc>/g)]
+    .map((match) => match[1])
+    .filter((path) => path.startsWith("docs"));
+
+  assert.deepEqual(listed.sort(), pages.sort(), "sitemap and docs/ disagree");
+});
+
+test("working notes are kept out of the published documentation", async () => {
+  const config = await readFile(new URL("../docs/.vitepress/config.mts", import.meta.url), "utf8");
+  assert.match(config, /srcExclude: \["superpowers\/\*\*"\]/);
+});
