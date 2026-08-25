@@ -3,3 +3,6 @@ dist/
 .superpowers/sdd/
 *.tsbuildinfo
 dist-ssr/
+.vitepress/cache/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
