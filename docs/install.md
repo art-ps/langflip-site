@@ -1,5 +1,13 @@
 # Установка
 
+## Homebrew
+
+```sh
+brew install --cask art-ps/tap/langflip
+```
+
+Ставит ту же сборку, что раздаётся с сайта, и обновляет её по `brew upgrade --cask langflip`. Предупреждение при первом запуске всё равно будет — см. ниже.
+
 ## Скачать и перенести
 
 1. Скачайте DMG с [langflip.app](https://langflip.app).
