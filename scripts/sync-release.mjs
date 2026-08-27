@@ -11,7 +11,7 @@ import { execFile } from "node:child_process";
 import { readFile, stat, writeFile } from "node:fs/promises";
 import { basename } from "node:path";
 import { promisify } from "node:util";
-import { release } from "../src/site-content.mjs";
+import { downloadBase, release } from "../src/site-content.mjs";
 
 const run = promisify(execFile);
 const contentPath = new URL("../src/site-content.mjs", import.meta.url);
@@ -47,6 +47,17 @@ if (after === before) {
   await writeFile(contentPath, after);
   console.log(`site-content now points at ${version} (${sizeLabel})`);
 }
+
+// The app's update check reads this file. It is written from the same locals as the
+// release block above, so the two cannot disagree about what version is published.
+const latestPath = new URL("../public/latest.json", import.meta.url);
+const latest = {
+  version,
+  url: `${downloadBase}/v${version}/${fileName}`,
+  notesURL: "https://langflip.app/",
+};
+await writeFile(latestPath, `${JSON.stringify(latest, null, 2)}\n`);
+console.log(`latest.json now points at ${version}`);
 
 // The tag is what downloadHref() links to, so publishing it belongs to the same step: a
 // site pointing at a release that does not exist is a 404 on the only button that matters.

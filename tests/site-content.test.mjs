@@ -168,3 +168,15 @@ test("working notes are kept out of the published documentation", async () => {
   const config = await readFile(new URL("../docs/.vitepress/config.mts", import.meta.url), "utf8");
   assert.match(config, /srcExclude: \["superpowers\/\*\*"\]/);
 });
+
+// The app polls this file to decide whether to prompt for an update. If it lags behind
+// the release block, users are told to download a version the site does not serve.
+test("latest.json matches the published release", async () => {
+  const raw = await readFile(new URL("latest.json", publicDir), "utf8");
+  const latest = JSON.parse(raw);
+
+  assert.equal(latest.version, release.version);
+  assert.equal(latest.url, downloadHref());
+  assert.equal(latest.notesURL, "https://langflip.app/");
+  assert.deepEqual(Object.keys(latest).sort(), ["notesURL", "url", "version"]);
+});
