@@ -13,7 +13,17 @@ export default defineConfig({
   srcExclude: ["superpowers/**"],
   cleanUrls: true,
   lastUpdated: true,
-  head: [["link", { rel: "icon", type: "image/png", href: "/langflip-icon.png" }]],
+  head: [
+    ["link", { rel: "icon", type: "image/png", href: "/langflip-icon.png" }],
+    [
+      "script",
+      {
+        defer: "",
+        src: "https://stats.pisarev.me/script.js",
+        "data-website-id": "8188c8a1-577c-4491-8913-d1acac226f58",
+      },
+    ],
+  ],
   themeConfig: {
     logo: "/langflip-icon.png",
     nav: [
