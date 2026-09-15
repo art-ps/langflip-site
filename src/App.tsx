@@ -64,6 +64,11 @@ function App({
               {release.macOS} <span aria-hidden="true">·</span> DMG <span aria-hidden="true">·</span>{" "}
               {t.releaseNoteSize}
             </p>
+            <a className="vibecoded-badge hero-vibecoded" href="https://vibecoded.ru" target="_blank" rel="noopener">
+              <span className="vibecoded-dot" aria-hidden="true" />
+              {t.footerProjectBy} <strong>vibecoded.ru</strong>
+              <span aria-hidden="true">↗</span>
+            </a>
           </div>
 
           <div className="conversion-demo" aria-label={t.demoLabel}>

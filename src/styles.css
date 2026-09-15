@@ -175,6 +175,7 @@ h1 {
 .download-button:hover { box-shadow: 0 17px 36px #5969de55, inset 0 1px #ffffff52; transform: translateY(-2px); }
 .download-button span { font-size: 1.2rem; }
 .release-note { color: var(--muted); font-size: 0.84rem; margin: 22px 0 0; }
+.hero-vibecoded { margin-top: 26px; }
 
 .conversion-demo {
   align-items: center;
