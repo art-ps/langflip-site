@@ -35,10 +35,10 @@ export const meta = Object.freeze({
 export const locales = Object.freeze(Object.keys(meta));
 
 export const release = Object.freeze({
-  version: "0.3.7",
-  fileName: "LangFlip-0.3.7.dmg",
-  sizeLabel: "5,5 МБ",
-  sizeLabelEn: "5.5 MB",
+  version: "0.4.0",
+  fileName: "LangFlip-0.4.0.dmg",
+  sizeLabel: "28,6 МБ",
+  sizeLabelEn: "28.6 MB",
   macOS: "macOS 14+",
 });
 
