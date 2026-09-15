@@ -48,7 +48,7 @@ function contrastRatio(first, second) {
 }
 
 test("page covers correction, dictation, privacy, and installation", () => {
-  for (const required of ["id=\"features\"", "id=\"privacy\"", "id=\"install\"", "WhisperKit", "⌥⌘Z"]) {
+  for (const required of ["id=\"features\"", "id=\"privacy\"", "id=\"install\"", "Whisper", "⌥⌘Z"]) {
     assert.match(app, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
 

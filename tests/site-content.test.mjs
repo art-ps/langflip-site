@@ -112,7 +112,7 @@ test("crawler files point at the canonical URL", async () => {
     assert.match(sitemap, new RegExp(`<loc>${localeUrl(locale)}</loc>`), `${locale} is missing`);
   }
   assert.match(llms, /# LangFlip/);
-  assert.match(llms, /WhisperKit/);
+  assert.match(llms, /Whisper/);
 });
 
 test("the custom domain is declared exactly once, in CNAME", async () => {

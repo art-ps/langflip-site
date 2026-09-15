@@ -126,7 +126,7 @@ export const copy = Object.freeze({
     dictationBodyBefore: "Распознавание работает через",
     dictationBodyMiddle:
       "на Neural Engine — процессоре, который есть в каждом Mac на Apple Silicon. Функция включается по желанию, а модель размером около",
-    dictationModelSize: "626 МБ",
+    dictationModelSize: "626 МБ, либо 311 МБ для GigaAM (только русский)",
     dictationBodyAfter: "загружается один раз отдельно.",
     dictationStepsLabel: "Как пользоваться диктовкой",
     dictationStep1: "Удерживайте",
@@ -205,7 +205,7 @@ export const copy = Object.freeze({
     dictationBodyBefore: "Recognition runs through",
     dictationBodyMiddle:
       "on the Neural Engine, the coprocessor in every Apple Silicon Mac. The feature is opt-in, and the model of roughly",
-    dictationModelSize: "626 MB",
+    dictationModelSize: "626 MB, or 311 MB for GigaAM (Russian only)",
     dictationBodyAfter: "is downloaded once, separately.",
     dictationStepsLabel: "How dictation works",
     dictationStep1: "Hold",
