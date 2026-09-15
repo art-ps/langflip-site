@@ -90,6 +90,7 @@ export interface Copy {
   readonly finalLead: string;
   readonly footerVersion: string;
   readonly footerLinksLabel: string;
+  readonly footerProjectBy: string;
 }
 
 export const site: Readonly<Site>;

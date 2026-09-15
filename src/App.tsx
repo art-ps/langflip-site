@@ -212,7 +212,14 @@ function App({
           <img src={icon} alt={t.iconAlt} width="36" height="36" />
           <span>LangFlip</span>
         </a>
-        <p>{t.footerVersion}</p>
+        <div className="footer-meta">
+          <p>{t.footerVersion}</p>
+          <a className="vibecoded-badge" href="https://vibecoded.ru" target="_blank" rel="noopener">
+            <span className="vibecoded-dot" aria-hidden="true" />
+            {t.footerProjectBy} <strong>vibecoded.ru</strong>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
         <nav aria-label={t.footerLinksLabel}>
           {docsHref ? <a href={docsHref}>{t.navDocs}</a> : null}
           <a href="#privacy">{t.navPrivacy}</a>

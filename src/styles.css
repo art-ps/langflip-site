@@ -585,6 +585,38 @@ h1 {
 }
 .site-footer p { color: var(--muted); font-size: 0.78rem; margin: 0; }
 .site-footer nav { display: flex; font-size: 0.82rem; font-weight: 700; gap: 24px; justify-self: end; }
+.footer-meta { display: grid; gap: 12px; justify-items: center; text-align: center; }
+.vibecoded-badge {
+  align-items: center;
+  background: linear-gradient(#fff, #fff) padding-box, linear-gradient(120deg, var(--blue), var(--violet)) border-box;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  box-shadow: 0 8px 22px #5463a51a;
+  color: var(--muted);
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 700;
+  gap: 8px;
+  padding: 7px 14px 7px 11px;
+  transition: box-shadow 160ms ease, transform 160ms ease;
+  white-space: nowrap;
+}
+.vibecoded-badge strong {
+  background: linear-gradient(120deg, var(--blue), var(--violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 900;
+}
+.vibecoded-badge > span:last-child { color: var(--violet); font-size: 0.7rem; }
+.vibecoded-badge:hover { box-shadow: 0 12px 28px #7857e92e; transform: translateY(-1px); }
+.vibecoded-dot {
+  background: linear-gradient(135deg, var(--blue), var(--violet));
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--violet-soft);
+  height: 8px;
+  width: 8px;
+}
 
 @keyframes conversion-before-stage {
   0%, 20% { filter: blur(0); opacity: 1; transform: translateY(0); }
@@ -678,6 +710,7 @@ h1 {
   .site-footer { grid-template-columns: 1fr; padding: 30px 20px 42px; }
   .site-footer nav { flex-direction: column; gap: 12px; justify-self: start; }
   .footer-brand { width: fit-content; }
+  .footer-meta { justify-items: start; text-align: left; }
 }
 
 @media (prefers-reduced-motion: reduce) {

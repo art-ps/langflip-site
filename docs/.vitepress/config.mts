@@ -74,7 +74,8 @@ export default defineConfig({
       },
     },
     footer: {
-      message: "Локальная утилита для macOS: исправление раскладки и диктовка.",
+      message:
+        'Локальная утилита для macOS: исправление раскладки и диктовка. Проект <a href="https://vibecoded.ru" target="_blank" rel="noopener">vibecoded.ru</a>.',
       copyright: "langflip.app",
     },
   },

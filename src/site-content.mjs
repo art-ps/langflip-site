@@ -160,6 +160,7 @@ export const copy = Object.freeze({
     finalLead: "Бесплатно. Без подписки. Данные остаются на Mac.",
     footerVersion: `Версия ${release.version}`,
     footerLinksLabel: "Ссылки проекта",
+    footerProjectBy: "Проект",
   }),
   en: Object.freeze({
     sizeLabel: release.sizeLabelEn,
@@ -238,5 +239,6 @@ export const copy = Object.freeze({
     finalLead: "Free. No subscription. Your data stays on the Mac.",
     footerVersion: `Version ${release.version}`,
     footerLinksLabel: "Project links",
+    footerProjectBy: "A project by",
   }),
 });
