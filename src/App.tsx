@@ -135,7 +135,7 @@ function App({
             <p className="eyebrow">{t.dictationEyebrow}</p>
             <h2 id="dictation-title">{t.dictationTitle}</h2>
             <p>
-              {t.dictationBodyBefore} <strong>WhisperKit</strong> {t.dictationBodyMiddle}{" "}
+              {t.dictationBodyBefore} <strong>Whisper</strong>{locale === "ru" ? ", модель по умолчанию," : ", the default model,"} {t.dictationBodyMiddle}{" "}
               <strong>{t.dictationModelSize}</strong> {t.dictationBodyAfter}
             </p>
           </div>
