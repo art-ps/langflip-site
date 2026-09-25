@@ -183,10 +183,6 @@ function App({
               <span className="step-number">03</span>
               <div><h3>{t.install3Title}</h3><p>{t.install3Body}</p></div>
             </li>
-            <li>
-              <span className="step-number">04</span>
-              <div><h3>{t.install4Title}</h3><p>{t.install4Body}</p></div>
-            </li>
           </ol>
         </section>
 
