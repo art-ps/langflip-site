@@ -5,7 +5,7 @@
 > Аналог Punto Switcher для Mac. Всё работает на устройстве — без облака, аккаунтов
 > и подписки.
 
-- Платформа: macOS 14 и новее, Apple Silicon.
+- Платформа: macOS 14 и новее, Apple Silicon или Intel.
 - Цена: бесплатно, без подписки.
 - Установка: DMG со страницы проекта или Homebrew-cask art-ps/tap/langflip.
 - Разрешения: Input Monitoring и Accessibility; микрофон — только для диктовки.
