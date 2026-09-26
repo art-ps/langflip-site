@@ -58,7 +58,7 @@ test("page covers correction, dictation, privacy, and installation", () => {
     "Punto Switcher",
     "Input Monitoring",
     "Accessibility",
-    "нотаризована Apple",
+    "Разрешите доступ",
   ]) assert.match(russian, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 
   for (const required of [
@@ -67,7 +67,7 @@ test("page covers correction, dictation, privacy, and installation", () => {
     "Punto Switcher",
     "Input Monitoring",
     "Accessibility",
-    "notarized by Apple",
+    "Grant access",
   ]) assert.match(english, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 });
 

@@ -76,7 +76,6 @@ export interface Copy {
   readonly privacyItems: readonly string[];
   readonly installEyebrow: string;
   readonly installTitle: string;
-  readonly installLead: string;
   readonly install1Title: string;
   readonly install1Body: string;
   readonly install2Title: string;

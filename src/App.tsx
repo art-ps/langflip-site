@@ -168,7 +168,6 @@ function App({
           <div className="section-heading install-heading">
             <p className="eyebrow">{t.installEyebrow}</p>
             <h2 id="install-title">{t.installTitle}</h2>
-            <p>{t.installLead}</p>
           </div>
           <ol className="install-steps">
             <li>
