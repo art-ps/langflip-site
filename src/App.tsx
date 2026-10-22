@@ -34,7 +34,7 @@ function App({
               {t.languageSwitch}
             </a>
           </nav>
-          <a className="header-download" href={href}>
+          <a className="header-download" href={href} data-umami-event="download" data-umami-event-place="header">
             {t.navDownload}
           </a>
         </div>
@@ -56,7 +56,7 @@ function App({
               {t.heroDescriptionBefore} <span className="keyboard-key">⌘</span>
               {t.heroDescriptionAfter}
             </p>
-            <a className="download-button" href={href}>
+            <a className="download-button" href={href} data-umami-event="download" data-umami-event-place="hero">
               {t.downloadCta}
               <span aria-hidden="true">↓</span>
             </a>
@@ -198,7 +198,7 @@ function App({
             <p className="eyebrow">{t.finalEyebrow}</p>
             <h2 id="download-title">{t.finalTitle}</h2>
             <p>{t.finalLead}</p>
-            <a className="download-button download-button--dark" href={href}>
+            <a className="download-button download-button--dark" href={href} data-umami-event="download" data-umami-event-place="final">
               {t.downloadCta}
               <span aria-hidden="true">↓</span>
             </a>

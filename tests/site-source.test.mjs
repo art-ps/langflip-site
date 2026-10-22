@@ -238,6 +238,14 @@ test("deployment workflow uses least privilege, tests first, and immutable actio
   assert.doesNotMatch(workflow, /uses:\s*[^\s@]+@v\d+\b/);
 });
 
+test("every download link reports a umami event with its place", () => {
+  const links = app.match(/<a\b[^>]*href=\{href\}[^>]*>/g) ?? [];
+  assert.equal(links.length, 3);
+  for (const link of links) assert.match(link, /data-umami-event="download"/);
+  const places = links.map((link) => link.match(/data-umami-event-place="([a-z]+)"/)?.[1]);
+  assert.deepEqual(places, ["header", "hero", "final"]);
+});
+
 test("the build prerenders the page instead of shipping an empty root", async () => {
   const pkg = JSON.parse(
     await readFile(new URL("../package.json", import.meta.url), "utf8"),
