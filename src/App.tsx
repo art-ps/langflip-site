@@ -92,7 +92,7 @@ function App({
             </div>
             <div className="dictation-chip">
               <span className="dictation-dot" aria-hidden="true" />
-              {t.dictationChip} <span className="keyboard-key">⌘</span>
+              {t.dictationChip} <span className="keyboard-key">🌐</span>
             </div>
           </div>
         </section>
